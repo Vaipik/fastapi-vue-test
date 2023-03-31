@@ -14,21 +14,21 @@ def make_connection_string() -> str:
     result = (
         f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
     )
+
+    # result = "sqlite///:memory:"
+    result = (
+        f"postgresql+asyncpg://postgres:postgres@127.0.0.1:5432/postgres"
+    )
+    print(result)
+
     return result
 
 
-def sa_seesionmaker():
-    engine = create_async_engine(make_connection_string())
-    return sessionmaker(
+engine = create_async_engine(make_connection_string())
+sa_sessionmaker = sessionmaker(
         bind=engine,
         expire_on_commit=False,
         class_=AsyncSession,
         future=True,
         autoflush=False,
     )
-
-
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with sa_seesionmaker() as session:
-        yield session
-        await session.close()

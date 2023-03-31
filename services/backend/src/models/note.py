@@ -2,12 +2,13 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
-from sqlalchemy import UUID, String
+from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import UUID, DateTime
 
-from src.db.base_class import Base
-import src.constants.note as constants
+from db.base_class import Base
+import constants.note as constants
+
 
 class Note(Base):
     __tablename__ = "notes"
@@ -30,4 +31,7 @@ class Note(Base):
     edited_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime, onupdate=datetime.utcnow
     )
-    user: Mapped["User"] = relationship("User", back_populates="note")
+    user_email: Mapped[str] = mapped_column(
+        ForeignKey("users.email", ondelete="CASCADE")
+    )
+    user: Mapped["User"] = relationship("User", back_populates="note")  # type: ignore

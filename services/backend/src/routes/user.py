@@ -1,15 +1,33 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from src.schemas.user import UserAuthentication
+from dependecies.database import get_repository
+from repository.user import UserRepository
+from schemas.user import UserAuthentication, UserProfile
 
 user_api = APIRouter(
-    prefix="user",
+    prefix="/user",
     tags=["users"]
 )
 
 
 @user_api.post(
-    path="/"
+    path=""
 )
-def create_user(user: UserAuthentication):
-    return user
+async def create_user(
+        credentials: UserAuthentication,
+        user_repo: UserRepository = Depends(get_repository(UserRepository))
+):
+    user = await user_repo.create_user(credentials)
+    return credentials
+
+
+@user_api.post(
+    path="/profile"
+)
+async def update_profile(
+        profile: UserProfile,
+        user_repo: UserRepository = Depends(get_repository(UserRepository))
+):
+    user_email = "email@com.ua"
+    updated_profile = await user_repo.update_user_profile(user_email, profile)
+    return updated_profile

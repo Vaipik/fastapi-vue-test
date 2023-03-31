@@ -4,8 +4,8 @@ from typing import Optional, List
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.db.base_class import Base
-import src.constants.user as constants
+from db.base_class import Base
+import constants.user as constants
 
 
 class Status(enum.Enum):
@@ -34,4 +34,9 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         insert_default=True)
-    note: Mapped[List["Note"]] = relationship("User", back_populates="user")
+    note: Mapped[List["Note"]] = relationship(  # type: ignore
+        "Note",
+        back_populates="user",
+        cascade="all, delete",
+        passive_deletes=True
+    )

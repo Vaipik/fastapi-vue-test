@@ -1,29 +1,49 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from typing import Annotated
 
-from src.routes.user import user_api
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
+
+from routes.user import user_api
+from routes.auth import token_api
+from routes.note import notes_api
+from schemas.user import UserAuthentication
 
 app = FastAPI(
     title="fastapi-vue",
     version="0.0.1",
 )
+app.include_router(user_api)
+app.include_router(token_api)
+app.include_router(notes_api)
+
+origins = [
+    "http://localhost:8080",
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:8080"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 
-@app.get("/ping")
+@app.get(
+    "/ping",
+    tags=["ping-pong"]
+)
 def ping_pong():
     return "pong"
 
 
-app.include_router(user_api)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@app.get("/items/{item_id}")
-async def read_item(item_id: int):
-    return {"item_id": item_id}
+def fake_decode_token(token):
+    return UserAuthentication(
+        email=token + "fakedecoded",
+    )
+
+

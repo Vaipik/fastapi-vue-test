@@ -11,5 +11,9 @@ class UserAuthentication(BaseModel):
 class UserProfile(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
-    sex_name: Optional[str]
+    sex: Optional[str]
+
+
+class UserInDB(UserAuthentication, UserProfile):
+    hashed_password: str
 
