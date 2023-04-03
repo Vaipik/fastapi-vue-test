@@ -52,3 +52,12 @@ class NoteRepository(BaseRepository):
             await self._session.commit()
             await self._session.refresh(instance=note)
             return note
+
+    async def delete_note(self, note_id: UUID) -> None:
+        note = await self.get_note_by_id(note_id)
+        if note is None:
+            pass  # TODO: Raise Error
+
+        stmt = sa.delete(Note).where(Note.id == note_id)
+        await self._session.execute(stmt)
+        await self._session.commit()
