@@ -14,6 +14,9 @@ class UserProfile(BaseModel):
     sex: Optional[str]
 
 
-class UserInDB(UserAuthentication, UserProfile):
-    hashed_password: str
+class UserInDB(UserProfile):
+    email: str
+
+    class Config:
+        orm_mode = True
 

@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 
 from routes.user import user_api
-from routes.auth import token_api
+from routes.auth import auth_api
 from routes.note import notes_api
 from schemas.user import UserAuthentication
 
@@ -14,7 +14,7 @@ app = FastAPI(
     version="0.0.1",
 )
 app.include_router(user_api)
-app.include_router(token_api)
+app.include_router(auth_api)
 app.include_router(notes_api)
 
 origins = [

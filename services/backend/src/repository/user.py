@@ -16,6 +16,7 @@ class UserRepository(BaseRepository):
 
     async def create_user(self, credentials: UserAuthentication) -> User:
         user = User(
+
             email=credentials.email,
             hashed_password=password_hashing.get_password_hash(credentials.password)
         )

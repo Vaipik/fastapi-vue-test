@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from dependecies.database import get_repository
 from repository.user import UserRepository
-from schemas.user import UserAuthentication, UserProfile
+from schemas.user import UserAuthentication, UserProfile, UserInDB
 
 user_api = APIRouter(
     prefix="/user",
@@ -11,14 +11,15 @@ user_api = APIRouter(
 
 
 @user_api.post(
-    path=""
+    path="/",
+    response_model=UserInDB
 )
 async def create_user(
         credentials: UserAuthentication,
         user_repo: UserRepository = Depends(get_repository(UserRepository))
 ):
     user = await user_repo.create_user(credentials)
-    return credentials
+    return user
 
 
 @user_api.post(
